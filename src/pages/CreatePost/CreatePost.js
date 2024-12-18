@@ -57,7 +57,6 @@ const CreatePost = () => {
 
         navigate("/");
 
-
     };
 
     return (
