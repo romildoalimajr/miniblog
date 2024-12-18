@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import styles from './Register.module.css'
+import { useAuthentication } from '../../hooks/useAuthentication';
 
 const Register = () => {
 
@@ -9,9 +10,12 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
 
-    const handleSubmit = (e) => {
-        e.preventSubmit();
+    const { createUser, error: authError, loading } = useAuthentication();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setError("");
+
         const user = {
             displayName,
             email,
@@ -21,8 +25,16 @@ const Register = () => {
             setError("As senhas precisam ser iguais!...");
             return;
         }
+
+        const res = await createUser(user)
         console.log(user);
     };
+
+    useEffect(() => {
+        if(authError){
+            setError(authError);
+        }
+    }, [authError])
 
     return (
         <div className={styles.register}>
@@ -59,6 +71,7 @@ const Register = () => {
                         type="password"
                         name='password'
                         required
+                        autoComplete='off'
                         placeholder='Insira sua senha'
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -70,12 +83,15 @@ const Register = () => {
                         type="password"
                         name='confirmPassword'
                         required
+                        autoComplete='off'
                         placeholder='Confirme a sua senha'
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                 </label>
-                <button className='btn'>Cadastrar</button>
+                {!loading && <button className='btn'>Cadastrar</button>}
+                {loading && <button className='btn' disabled>Aguarde...</button>}
+                
                 {error && <p className="error">{error}</p>}
             </form>
         </div>
