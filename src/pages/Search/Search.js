@@ -1,7 +1,6 @@
 import styles from './Search.module.css';
 
 //hooks
-
 import { useFetchDocuments } from '../../hooks/useFetchDocuments';
 import { useQuery } from '../../hooks/useQuery';
 
